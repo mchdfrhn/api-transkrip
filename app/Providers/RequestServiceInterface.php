@@ -1,0 +1,15 @@
+<?php
+
+namespace App\Providers;
+
+use App\Models\Request;
+use Illuminate\Database\Eloquent\Collection;
+
+interface RequestServiceInterface
+{
+    public function getAllRequests(): Collection;
+    public function createRequest(array $data): Request;
+    public function getRequestById(string $id): ?Request;
+    public function updateRequest(Request $request, array $data): bool;
+    public function deleteRequest(Request $request): ?bool;
+}

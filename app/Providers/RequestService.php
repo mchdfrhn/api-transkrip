@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Request;
+use App\Models\Response;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class RequestService implements RequestServiceInterface
@@ -15,13 +17,22 @@ class RequestService implements RequestServiceInterface
 
     public function createRequest(array $data): Request
     {
-        return Request::create([
-            'id' => Str::uuid(),
-            'user_id' => $data['user_id'],
-            'type' => $data['type'],
-            'queue' => $data['queue'],
-            'request' => $data['request'],
-        ]);
+        return DB::transaction(function () use ($data) {
+            $request = Request::create([
+                'id' => Str::uuid(),
+                'user_id' => $data['user_id'],
+                'type' => $data['type'],
+                'queue' => $data['queue'],
+                'request' => $data['request'],
+            ]);
+
+            $request->response()->create([
+                'id' => Str::uuid(),
+                'response' => ''
+            ]);
+
+            return $request;
+        });
     }
 
     public function getRequestById(string $id): ?Request

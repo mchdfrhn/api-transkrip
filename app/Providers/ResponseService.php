@@ -19,6 +19,7 @@ class ResponseService implements ResponseServiceInterface
             'id' => Str::uuid(),
             'request_id' => $data['request_id'],
             'response' => $data['response'],
+            'status' => $data['status'] ?? 'pending',
         ]);
     }
 

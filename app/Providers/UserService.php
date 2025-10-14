@@ -23,6 +23,7 @@ class UserService implements UserServiceInterface
             'fullname' => $data['fullname'],
             'email' => $data['email'],
             'role' => $data['role'],
+            'url_photo' => $data['url_photo'] ?? null,
         ]);
     }
 

@@ -26,6 +26,7 @@ class UsersSeeder extends Seeder
             'email' => 'admin@example.com',
             'phone' => '081234567890',
             'role' => 'admin',
+            'url_photo' => 'https://ui-avatars.com/api/?name=Admin+User&background=random',
         ]);
 
         // Create Regular User
@@ -38,6 +39,7 @@ class UsersSeeder extends Seeder
             'email' => 'user@example.com',
             'phone' => '081234567891',
             'role' => 'user',
+            'url_photo' => 'https://ui-avatars.com/api/?name=Regular+User&background=random',
         ]);
     }
 }

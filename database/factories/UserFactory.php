@@ -32,6 +32,7 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'phone' => fake()->phoneNumber(),
             'role' => 'user',
+            'url_photo' => 'https://ui-avatars.com/api/?name=' . urlencode(fake()->name()) . '&background=random',
         ];
     }
 

@@ -51,4 +51,23 @@ class Request extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get the response associated with the request.
+     */
+    public function response(): HasOne
+    {
+        return $this->hasOne(Response::class);
+    }
+
+    /**
+     * Get the ID of the response associated with the request.
+     *
+     * @return string
+     */
+    public function getResponseIdAttribute(): string
+    {
+        return $this->response->id;
+    }
+}
 }

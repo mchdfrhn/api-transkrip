@@ -25,10 +25,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/admin/dashboard', function () {
             return response()->json(['message' => 'Welcome, Admin!']);
         });
-        Route::apiResource('users', UserController::class);
+        Route::apiResource('users', UserController::class)->except(['show']);
         Route::apiResource('requests', RequestController::class);
         Route::apiResource('responses', ResponseController::class);
-        Route::apiResource('user-files', UserFileController::class);
         Route::apiResource('request-files', RequestFileController::class);
         Route::apiResource('response-files', ResponseFileController::class);
     });

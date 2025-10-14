@@ -26,6 +26,7 @@ class Response extends Model
         'id',
         'request_id',
         'response',
+        'status',
     ];
 
     /**

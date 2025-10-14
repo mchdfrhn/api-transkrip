@@ -30,19 +30,12 @@ class UserController extends Controller
             'email' => 'required|email|unique:user|max:255',
             'password' => 'required',
             'role' => 'required',
+            'url_photo' => 'nullable|url',
         ]);
 
         $user = $this->userService->createUser($request->all());
 
         return response()->json($user, 201);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
-        return response()->json($user);
     }
 
     /**
@@ -55,6 +48,7 @@ class UserController extends Controller
             'fullname' => 'required|max:255',
             'email' => 'required|email|unique:user,email,' . $user->id . '|max:255',
             'role' => 'required',
+            'url_photo' => 'nullable|url',
         ]);
 
         $this->userService->updateUser($user, $request->except('password'));

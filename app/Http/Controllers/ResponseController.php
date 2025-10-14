@@ -28,6 +28,7 @@ class ResponseController extends Controller
         $data = $request->validate([
             'request_id' => 'required|exists:requests,id',
             'response' => 'required|string',
+            'status' => 'sometimes|in:pending,in_progress,completed',
         ]);
 
         $responseModel = $this->responseService->createResponse($data);
@@ -51,6 +52,7 @@ class ResponseController extends Controller
         $data = $request->validate([
             'request_id' => 'sometimes|required|exists:requests,id',
             'response' => 'sometimes|required|string',
+            'status' => 'sometimes|in:pending,in_progress,completed',
         ]);
 
         $this->responseService->updateResponse($response, $data);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Request as RequestModel;
 use App\Providers\RequestServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RequestController extends Controller
 {
@@ -12,11 +13,31 @@ class RequestController extends Controller
     {
     }
 
+    private function isAdmin(): bool
+    {
+        $user = Auth::user();
+        return $user && ($user->role ?? null) === 'admin';
+    }
+
+    private function authorizeOwnerOrAdmin(RequestModel $requestModel)
+    {
+        if ($this->isAdmin()) {
+            return;
+        }
+
+        if (Auth::id() !== $requestModel->user_id) {
+            abort(403, 'Unauthorized');
+        }
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        // hanya admin yang boleh melihat daftar semua request
+        abort_unless($this->isAdmin(), 403, 'Unauthorized');
+
         return response()->json($this->requestService->getAllRequests());
     }
 
@@ -26,11 +47,16 @@ class RequestController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'user_id' => 'required|exists:user,id',
+            'user_id' => 'required|exists:users,id',
             'type' => 'required|string',
             'queue' => 'required|integer',
             'request' => 'required|string',
         ]);
+
+        // jika bukan admin, user hanya boleh membuat request untuk dirinya sendiri
+        if (! $this->isAdmin() && $data['user_id'] !== Auth::id()) {
+            abort(403, 'Unauthorized to create request for another user');
+        }
 
         $requestModel = $this->requestService->createRequest($data);
 
@@ -42,6 +68,9 @@ class RequestController extends Controller
      */
     public function show(RequestModel $request)
     {
+        // admin atau pemilik request dapat melihat
+        $this->authorizeOwnerOrAdmin($request);
+
         return response()->json($request);
     }
 
@@ -50,8 +79,11 @@ class RequestController extends Controller
      */
     public function update(Request $httpRequest, RequestModel $request)
     {
+        // hanya admin yang boleh mengupdate
+        abort_unless($this->isAdmin(), 403, 'Unauthorized');
+
         $data = $httpRequest->validate([
-            'user_id' => 'sometimes|required|exists:user,id',
+            'user_id' => 'sometimes|required|exists:users,id',
             'type' => 'sometimes|required|string',
             'queue' => 'sometimes|required|integer',
             'request' => 'sometimes|required|string',
@@ -67,6 +99,9 @@ class RequestController extends Controller
      */
     public function destroy(RequestModel $request)
     {
+        // hanya admin yang boleh menghapus
+        abort_unless($this->isAdmin(), 403, 'Unauthorized');
+
         $this->requestService->deleteRequest($request);
 
         return response()->json(null, 204);

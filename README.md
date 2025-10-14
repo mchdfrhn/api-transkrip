@@ -7,6 +7,135 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+# 🎓 API Transkrip - Academic Transcript Request System
+
+An elegant REST API system for managing academic transcript requests, built with Laravel. This system allows students to request transcripts and administrators to process these requests efficiently.
+
+![Laravel](https://img.shields.io/badge/Laravel-10.x-red.svg)
+![PHP](https://img.shields.io/badge/PHP-^8.1-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+
+## 📋 Features
+
+- **Authentication & Authorization**
+  - JWT-based authentication
+  - Role-based access control (Admin & User)
+  - Secure endpoint protection
+
+- **Request Management**
+  - Create transcript requests
+  - Track request status
+  - Queue management
+  - File attachments support
+
+- **Response Handling**
+  - Admin response management
+  - File response capabilities
+  - Status tracking system
+
+## 🚀 Prerequisites
+
+Before you begin, ensure you have met the following requirements:
+
+- PHP >= 8.1
+- Composer
+- MySQL/MariaDB
+- Node.js & NPM (for frontend assets)
+- Laravel CLI
+
+## ⚙️ Installation
+
+1. Clone the repository
+```bash
+git clone https://github.com/yourusername/api-transkrip.git
+cd api-transkrip
+```
+
+2. Install dependencies
+```bash
+composer install
+```
+
+3. Set up environment file
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+4. Configure database in `.env`
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+```
+
+5. Run migrations and seeders
+```bash
+php artisan migrate:fresh --seed
+```
+
+## 🔑 Default Users
+
+After running seeders, you can use these default accounts:
+
+- Admin Account
+  - Username: admin
+  - Password: password
+
+- Test User Accounts
+  - Username: user1 / user2
+  - Password: password
+
+## 🛣️ API Routes
+
+### Authentication
+- `POST /api/login` - Authenticate user
+- `POST /api/logout` - Logout user
+
+### Requests
+- `GET /api/requests` - List all requests (Admin only)
+- `POST /api/requests` - Create new request
+- `GET /api/requests/{id}` - Get specific request
+- `PUT /api/requests/{id}` - Update request (Admin only)
+- `DELETE /api/requests/{id}` - Delete request (Admin only)
+
+### Responses
+- `GET /api/responses` - List all responses (Admin only)
+- `POST /api/responses` - Create response (Admin only)
+- `GET /api/responses/{id}` - Get specific response
+- `PUT /api/responses/{id}` - Update response (Admin only)
+- `DELETE /api/responses/{id}` - Delete response (Admin only)
+
+## 🔒 Security
+
+- All endpoints (except login) require authentication
+- Role-based access control implementation
+- Request validation and sanitization
+- CORS protection
+- Rate limiting
+
+## 🧪 Testing
+
+Run the test suite:
+```bash
+php artisan test
+```
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+
+## 👥 Contributors
+
+- [Your Name](https://github.com/yourusername)
+
+## 📮 Support
+
+For support, email your-email@example.com or create an issue in this repository.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

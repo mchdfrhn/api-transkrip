@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Request extends Model
@@ -61,6 +62,14 @@ class Request extends Model
     }
 
     /**
+     * Get the files associated with the request.
+     */
+    public function requestFiles()
+    {
+        return $this->hasMany(RequestFile::class);
+    }
+
+    /**
      * Get the ID of the response associated with the request.
      *
      * @return string
@@ -69,5 +78,4 @@ class Request extends Model
     {
         return $this->response->id;
     }
-}
 }

@@ -26,10 +26,6 @@ Route::middleware('auth:sanctum')->group(function () {
             return response()->json(['message' => 'Welcome, Admin!']);
         });
         Route::apiResource('users', UserController::class)->except(['show']);
-        Route::apiResource('requests', RequestController::class);
-        Route::apiResource('responses', ResponseController::class);
-        Route::apiResource('request-files', RequestFileController::class);
-        Route::apiResource('response-files', ResponseFileController::class);
     });
 
     // User specific routes (can also be accessed by admin)
@@ -37,5 +33,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/profile', function (Request $request) {
             return response()->json(['message' => 'This is your profile', 'user' => $request->user()]);
         });
+        Route::apiResource('requests', RequestController::class);
+        Route::apiResource('responses', ResponseController::class);
+        Route::apiResource('request-files', RequestFileController::class);
+        Route::apiResource('response-files', ResponseFileController::class);
     });
 });

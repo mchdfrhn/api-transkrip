@@ -1,19 +1,57 @@
-# API Documentation (Detail & Panduan Penggunaan)
+# API Documentation
 
-Base URL: `/api`  
-Semua endpoint di sini diasumsikan memerlukan header:
-- `Authorization: Bearer <access_token>` (kecuali /login)
-- `Accept: application/json`
+## Overview
+This API provides endpoints for managing transcript and document requests in an academic system. It supports user authentication, request management, response handling, and file uploads/downloads.
 
-Ringkasan singkat role:
-- admin — akses penuh ke semua endpoint CRUD.
-- user — terbatas:
-  - Boleh membuat request (POST /requests) untuk dirinya sendiri.
-  - Boleh membaca request by id miliknya (GET /requests/{id}).
-  - Boleh membaca response by id jika response terkait dengan request miliknya (GET /responses/{id}).
-  - Boleh mengunggah file request untuk request miliknya (POST /request-files).
-  - Boleh membaca file request by id jika file terkait request miliknya (GET /request-files/{id}).
-  - Boleh membaca file response by id jika file terkait response yang boleh diaksesnya (GET /response-files/{id}).
+## Table of Contents
+1. [Authentication](./docs/endpoints/auth.md)
+   - Login
+   - Logout
+2. [User Management](./docs/endpoints/users.md)
+   - User Profile
+   - Dashboard Statistics
+3. [Request Management](./docs/endpoints/requests.md)
+   - Create Request
+   - View Requests
+   - Queue System
+4. [Response Management](./docs/endpoints/responses.md)
+   - Create Response
+   - View Responses
+   - Status Types
+5. [File Management](./docs/endpoints/files.md)
+   - Upload Files
+   - Download Files
+   - Supported Formats
+
+## Base URL
+```
+/api
+```
+
+## Global Headers
+All endpoints require these headers (except /login):
+```
+Authorization: Bearer <access_token>
+Accept: application/json
+```
+
+## Role-Based Access Control
+The API implements role-based access control with two main roles:
+
+### Admin Role
+- Full access to all CRUD operations
+- Can manage all users, requests, and responses
+- Can upload and download all files
+
+### User Role
+- Limited access to specific operations:
+  - Create requests for themselves
+  - View their own requests
+  - View responses to their requests
+  - Upload files for their requests
+  - Download files related to their requests/responses
+  - Update their own profile
+  - View their dashboard statistics
 
 ---
 
@@ -49,20 +87,23 @@ Ringkasan singkat role:
 - Auth required.
 - Respons sukses: `{ "message": "Logout success" }`
 
----
+## Error Responses
+All error responses follow a consistent format:
 
-## Header Umum & Error
-- Header: `Accept: application/json`, `Authorization: Bearer <token>`
-- Error umum:
-  - 401 Unauthorized — token tidak valid / tidak disertakan.
-  - 403 Forbidden — role atau owner check gagal.
-  - 404 Not Found — resource tidak ada / tidak boleh diakses.
-  - 422 Unprocessable Entity — validasi input gagal.
-
-Contoh response error:
 ```json
-{ "message": "Unauthorized" }
+{
+    "message": "Error description",
+    "code": 400
+}
 ```
+
+Common error codes:
+- `401 Unauthorized`: Invalid or missing authentication token
+- `403 Forbidden`: Insufficient permissions or ownership validation failed
+- `404 Not Found`: Requested resource does not exist
+- `422 Unprocessable Entity`: Input validation failed
+- `429 Too Many Requests`: Rate limit exceeded
+- `500 Internal Server Error`: Server-side error
 
 ---
 
@@ -74,41 +115,38 @@ Contoh response error:
   - request-files: POST /request-files (untuk request milik sendiri), GET /request-files/{id} (hanya file milik request user)
   - response-files: GET /response-files/{id} (hanya jika file terkait response yang dapat diakses user)
 
----
+## API Versioning
+The current API version is v1. All endpoints are prefixed with `/api`.
 
-## Endpoint Detail
+## Rate Limiting
+- 60 requests per minute per user
+- Rate limit headers are included in all responses:
+  ```
+  X-RateLimit-Limit: 60
+  X-RateLimit-Remaining: 59
+  X-RateLimit-Reset: 1635519600
+  ```
 
-Catatan: semua contoh memakai JSON kecuali upload file (multipart/form-data).
+## Pagination
+List endpoints support pagination with the following query parameters:
+- `page`: Page number (default: 1)
+- `per_page`: Items per page (default: 15, max: 100)
 
-### Users
-- GET /users — admin
-- POST /users — admin (body: name, email, password, role)
-- GET /users/{id} — admin
-- PUT/PATCH /users/{id} — admin
-- DELETE /users/{id} — admin
-
-### Profile
-- GET /profile — admin, user (kembali data user yang login)
-
-### Requests
-- GET /requests — admin (mengambil semua request)
-  - Contoh respons: `[ { "id":1, "user_id":2, "type":"...", "queue":1, "request":"..." }, ... ]`
-- POST /requests — admin atau user
-  - Admin bisa membuat request untuk siapa saja.
-  - User hanya boleh membuat untuk dirinya sendiri.
-  - Body contoh:
-    ```json
-    {
-      "user_id": 2,
-      "type": "transcription",
-      "queue": 10,
-      "request": "Audio file needs transcription"
+Example response format:
+```json
+{
+    "data": [...],
+    "meta": {
+        "current_page": 1,
+        "last_page": 10,
+        "total": 150,
+        "per_page": 15
     }
-    ```
-  - Respons sukses: 201 Created + request object
-- GET /requests/{id} — admin atau owner (user hanya jika user_id === auth id)
-- PUT/PATCH /requests/{id} — admin only
-- DELETE /requests/{id} — admin only
+}
+```
+
+## For More Details
+Please refer to the specific documentation sections linked in the Table of Contents above.
 
 Contoh curl (user membuat request untuk dirinya sendiri):
 ```
@@ -216,8 +254,3 @@ curl -H "Authorization: Bearer <token>" \
 - Tangani error 403/401 pada client: tampilkan pesan sesuai respons API.
 
 ---
-
-Jika butuh, saya bisa:
-- Menambahkan contoh response lengkap per endpoint.
-- Menyertakan skema JSON untuk model Request/Response/file.
-- Menambahkan contoh implementasi client (JS / PHP / curl) untuk upload dan download file.

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Providers;
+namespace App\Services;
 
 
-use App\Providers\UserServiceInterface;
-use App\Providers\UserService;
+use App\Services\UserServiceInterface;
+use App\Services\UserService;
 use Illuminate\Support\ServiceProvider;
 
 

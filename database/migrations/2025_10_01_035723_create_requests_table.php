@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('id')->primary();
             $table->string('user_id');
             $table->string('type');
-            $table->integer('queue');
+            $table->string('queue');
             $table->string('request');
             $table->timestamps();
 

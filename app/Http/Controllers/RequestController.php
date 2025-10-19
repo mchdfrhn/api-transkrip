@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Request as RequestModel;
-use App\Providers\RequestServiceInterface;
+use App\Services\RequestServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Providers;
+namespace App\Services;
 
 use Illuminate\Support\ServiceProvider;
 
-class RequestServiceProvider extends ServiceProvider
+class ResponseServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
@@ -12,8 +12,8 @@ class RequestServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(
-            RequestServiceInterface::class,
-            RequestService::class
+            ResponseServiceInterface::class,
+            ResponseService::class
         );
     }
 

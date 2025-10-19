@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Providers;
+namespace App\Services;
 
 use Illuminate\Support\ServiceProvider;
 
-class ResponseFileServiceProvider extends ServiceProvider
+class RequestFileServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
@@ -12,8 +12,8 @@ class ResponseFileServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(
-            ResponseFileServiceInterface::class,
-            ResponseFileService::class
+            RequestFileServiceInterface::class,
+            RequestFileService::class
         );
     }
 

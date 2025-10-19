@@ -30,9 +30,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // User specific routes (can also be accessed by admin)
     Route::middleware('role:user,admin')->group(function () {
+        Route::get('/users/{user}', [UserController::class, 'show']);
         Route::get('/profile', function (Request $request) {
             return response()->json(['message' => 'This is your profile', 'user' => $request->user()]);
         });
+        Route::put('/profile', [UserController::class, 'updateProfile']);
         Route::apiResource('requests', RequestController::class);
         Route::apiResource('responses', ResponseController::class);
         Route::apiResource('request-files', RequestFileController::class);

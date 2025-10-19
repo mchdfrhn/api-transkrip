@@ -49,7 +49,6 @@ class RequestController extends Controller
         $data = $request->validate([
             'user_id' => 'required|exists:users,id',
             'type' => 'required|string',
-            'queue' => 'required|integer',
             'request' => 'required|string',
         ]);
 
@@ -85,7 +84,6 @@ class RequestController extends Controller
         $data = $httpRequest->validate([
             'user_id' => 'sometimes|required|exists:users,id',
             'type' => 'sometimes|required|string',
-            'queue' => 'sometimes|required|integer',
             'request' => 'sometimes|required|string',
         ]);
 

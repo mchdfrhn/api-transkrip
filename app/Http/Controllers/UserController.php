@@ -57,6 +57,43 @@ class UserController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     */
+    public function show(User $user, Request $request)
+    {
+        // Check if the authenticated user is trying to access their own profile or is an admin
+        if ($request->user()->role === 'user' && $request->user()->id !== $user->id) {
+            return response()->json(['message' => 'Unauthorized to view other users\' profiles'], 403);
+        }
+
+        return response()->json($user);
+    }
+
+    /**
+     * Update user's own profile
+     */
+    public function updateProfile(Request $request)
+    {
+        $user = $request->user();
+
+        $request->validate([
+            'username' => 'required|unique:users,username,' . $user->id . '|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id . '|max:255',
+            'phone' => 'nullable|string|max:20',
+            'url_photo' => 'nullable|url',
+        ]);
+
+        $this->userService->updateUser($user, $request->only([
+            'username',
+            'email',
+            'phone',
+            'url_photo'
+        ]));
+
+        return response()->json($user);
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(User $user)

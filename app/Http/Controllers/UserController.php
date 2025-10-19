@@ -65,4 +65,22 @@ class UserController extends Controller
 
         return response()->json(null, 204);
     }
+
+    public function updateProfile(Request $request) {
+        $user = $request->user();
+
+        $validate = $request->validate([
+            'username' => 'max:255|unique:users,username,' . $user->id,
+            'email' => 'email|max:255|unique:users,email,'. $user->id,
+            'phone' => 'string|max:20',
+            'url_photo' => 'nullable|string'
+        ]);
+        
+        $user->update($validate);
+        return response()->json([
+            "status" => "success",
+            "data" => $user 
+        ]);
+        
+    }
 }

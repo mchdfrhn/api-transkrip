@@ -8,8 +8,18 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function __construct(private UserServiceInterface $userService)
+    public function __construct(
+        private UserServiceInterface $userService,
+        private \App\Services\UserDashboardService $dashboardService
+    ) {
+    }
+
+    /**
+     * Get user dashboard statistics
+     */
+    public function dashboard()
     {
+        return response()->json($this->dashboardService->getDashboardStats());
     }
     /**
      * Display a listing of the resource.

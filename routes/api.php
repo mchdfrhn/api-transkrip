@@ -35,6 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
             return response()->json(['message' => 'This is your profile', 'user' => $request->user()]);
         });
         Route::put('/profile', [UserController::class, 'updateProfile']);
+        Route::get('/dashboard', [UserController::class, 'dashboard']);
         Route::apiResource('requests', RequestController::class);
         Route::apiResource('responses', ResponseController::class);
         Route::apiResource('request-files', RequestFileController::class);

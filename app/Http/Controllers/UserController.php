@@ -102,7 +102,7 @@ class UserController extends Controller
 
         return response()->json([
             "status" => "success",
-            "data" => $data
+            "data" => $user
         ]);
     }
 

@@ -41,6 +41,28 @@ class RequestController extends Controller
         return response()->json($this->requestService->getAllRequests());
     }
 
+    public function myRequest()
+    {
+        $userId = Auth::id();
+
+        // dd("user id dari token tersebut: ", $userId);
+        //  dd("Tipe: ", gettype($userId));
+
+        if (!$userId) {
+            return response()->json([
+                "status" => "failed",
+                "message" => "user dengan id tersebut tidak ditemukan"
+            ]);
+
+            abort(401, 'Unauthenticated');
+        }
+
+        $request = $this->requestService->getRequestByUserId($userId);
+        return response()->json([
+            "status" => "success",
+            "data" => $request
+        ]);
+    }
     /**
      * Store a newly created resource in storage.
      */

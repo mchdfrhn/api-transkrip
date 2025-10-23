@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/profile', [UserController::class, 'updateProfile']);
         Route::get('/dashboard', [UserController::class, 'dashboard']);
         Route::apiResource('requests', RequestController::class);
+        Route::get('/myRequests', [RequestController::class, 'myRequest'] );
         Route::apiResource('responses', ResponseController::class);
         Route::apiResource('request-files', RequestFileController::class);
         Route::apiResource('response-files', ResponseFileController::class);

@@ -102,7 +102,10 @@ class UserController extends Controller
             'url_photo'
         ]));
 
-        return response()->json($user);
+        return response()->json([
+            "status" => "success",
+            "data" => $user
+        ]);
     }
 
     /**

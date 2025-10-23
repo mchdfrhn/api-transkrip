@@ -35,9 +35,9 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'username' => 'required|unique:user|max:255',
+            'username' => 'required|unique:users|max:255',
             'fullname' => 'required|max:255',
-            'email' => 'required|email|unique:user|max:255',
+            'email' => 'required|email|unique:users|max:255',
             'password' => 'required',
             'role' => 'required',
             'url_photo' => 'nullable|url',
@@ -54,9 +54,9 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $request->validate([
-            'username' => 'required|unique:user,username,' . $user->id . '|max:255',
+            'username' => 'required|unique:users,username,' . $user->id . '|max:255',
             'fullname' => 'required|max:255',
-            'email' => 'required|email|unique:user,email,' . $user->id . '|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id . '|max:255',
             'role' => 'required',
             'url_photo' => 'nullable|url',
         ]);
@@ -71,8 +71,10 @@ class UserController extends Controller
      */
     public function show(User $user, Request $request)
     {
-        // Check if the authenticated user is trying to access their own profile or is an admin
-        if ($request->user()->role === 'user' && $request->user()->id !== $user->id) {
+        $authenticatedUser = $request->user();
+        
+        // Check if user is admin or accessing their own profile
+        if ($authenticatedUser->role !== 'admin' && $authenticatedUser->id !== $user->id) {
             return response()->json(['message' => 'Unauthorized to view other users\' profiles'], 403);
         }
 

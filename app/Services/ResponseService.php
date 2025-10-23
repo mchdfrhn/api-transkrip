@@ -19,13 +19,12 @@ class ResponseService implements ResponseServiceInterface
             'id' => Str::uuid(),
             'request_id' => $data['request_id'],
             'response' => $data['response'],
-            'status' => $data['status'] ?? 'pending',
         ]);
     }
 
     public function getResponseById(string $id): ?Response
     {
-        return Response::find($id);
+        return Response::where('id', $id)->first();
     }
 
     public function updateResponse(Response $response, array $data): bool

@@ -6,6 +6,7 @@ use App\Models\Request as RequestModel;
 use App\Services\RequestServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class RequestController extends Controller
 {
@@ -21,12 +22,19 @@ class RequestController extends Controller
 
     private function authorizeOwnerOrAdmin(RequestModel $requestModel)
     {
+        $user = Auth::user();
+        if (!$user) {
+            abort(401, 'Unauthenticated');
+        }
+
+        // Admin dapat mengakses semua request
         if ($this->isAdmin()) {
             return;
         }
 
-        if (Auth::id() !== $requestModel->user_id) {
-            abort(403, 'Unauthorized');
+        // User hanya dapat mengakses request miliknya
+        if ($user->id !== $requestModel->user_id) {
+            abort(403, 'Unauthorized: Anda tidak memiliki akses ke request ini');
         }
     }
 
@@ -50,6 +58,7 @@ class RequestController extends Controller
             'user_id' => 'required|exists:users,id',
             'type' => 'required|string',
             'request' => 'required|string',
+            'status' => 'sometimes|in:pending,in_progress,completed',
         ]);
 
         // jika bukan admin, user hanya boleh membuat request untuk dirinya sendiri
@@ -65,12 +74,44 @@ class RequestController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(RequestModel $request)
+    public function show($id)
     {
-        // admin atau pemilik request dapat melihat
-        $this->authorizeOwnerOrAdmin($request);
+        try {
+            // Coba dapatkan request dengan ID yang diberikan
+            $request = $this->requestService->getRequestById($id);
+            
+            if (!$request) {
+                return response()->json([
+                    'message' => 'Request tidak ditemukan',
+                    'request_id' => $id
+                ], 404);
+            }
 
-        return response()->json($request);
+            // Cek otorisasi
+            $this->authorizeOwnerOrAdmin($request);
+
+            // Load semua relasi yang diperlukan
+            $request->load([
+                'user', 
+                'response', 
+                'response.responseFiles', 
+                'requestFiles'
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $request
+            ]);
+
+        } catch (\Exception $e) {
+            // Log error untuk debugging
+            Log::error('Error fetching request: ' . $e->getMessage());
+            
+            return response()->json([
+                'message' => 'Terjadi kesalahan saat mengambil data request',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -85,6 +126,7 @@ class RequestController extends Controller
             'user_id' => 'sometimes|required|exists:users,id',
             'type' => 'sometimes|required|string',
             'request' => 'sometimes|required|string',
+            'status' => 'sometimes|in:pending,in_progress,completed',
         ]);
 
         $this->requestService->updateRequest($request, $data);

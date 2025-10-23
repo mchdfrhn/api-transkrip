@@ -10,7 +10,7 @@
 {
     "user_id": "user-uuid",
     "type": "transkrip",
-    "request": "Permintaan transkrip nilai"
+    "request": "Permintaan transkrip nilai",
 }
 ```
 
@@ -22,6 +22,7 @@
     "type": "transkrip",
     "queue": "TRA251019-001",
     "request": "Permintaan transkrip nilai",
+    "status": "pending",
     "created_at": "2025-10-19T10:00:00Z",
     "updated_at": "2025-10-19T10:00:00Z"
 }
@@ -41,6 +42,7 @@
         "type": "transkrip",
         "queue": "TRA251019-001",
         "request": "Permintaan transkrip nilai",
+        "status": "pending",
         "created_at": "2025-10-19T10:00:00Z",
         "updated_at": "2025-10-19T10:00:00Z"
     }
@@ -63,6 +65,7 @@
     "type": "transkrip",
     "queue": "TRA251019-001",
     "request": "Permintaan transkrip nilai",
+    "status": "pending",
     "created_at": "2025-10-19T10:00:00Z",
     "updated_at": "2025-10-19T10:00:00Z"
 }

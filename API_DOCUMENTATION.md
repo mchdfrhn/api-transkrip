@@ -14,10 +14,10 @@ This API provides endpoints for managing transcript and document requests in an 
    - Create Request
    - View Requests
    - Queue System
+   - Status Types
 4. [Response Management](./docs/endpoints/responses.md)
    - Create Response
    - View Responses
-   - Status Types
 5. [File Management](./docs/endpoints/files.md)
    - Upload Files
    - Download Files
@@ -136,7 +136,7 @@ Example response format:
 ```json
 {
     "data": [...],
-    "meta": {
+    "meta": {request
         "current_page": 1,
         "last_page": 10,
         "total": 150,
@@ -164,7 +164,6 @@ curl -X POST https://your-host/api/requests \
     {
       "request_id": 1,
       "response": "Hasil transkrip ...",
-      "status": "completed"
     }
     ```
 - GET /responses/{id} — admin atau owner dari request terkait

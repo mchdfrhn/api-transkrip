@@ -28,16 +28,19 @@ class RequestsSeeder extends Seeder
                 'user_id' => $users->firstWhere('role', 'user')->id,
                 'type' => 'transkrip',
                 'request' => 'Permintaan transkrip semester 1',
+                'status' => 'completed',
             ],
             [
                 'user_id' => $users->firstWhere('username', 'user1')->id,
                 'type' => 'transkrip',
                 'request' => 'Permintaan transkrip semester 2',
+                'status' => 'completed',
             ],
             [
                 'user_id' => $users->firstWhere('username', 'user2')->id,
                 'type' => 'transkrip',
                 'request' => 'Permintaan transkrip semester 3',
+                'status' => 'completed',
             ],
         ];
 
@@ -49,6 +52,7 @@ class RequestsSeeder extends Seeder
                 'type' => $data['type'],
                 'queue' => QueueHelper::generateQueueNumber($data['type']),
                 'request' => $data['request'],
+                'status' => $data['status'],
             ];
         };
 

@@ -7,6 +7,7 @@ use App\Models\Response;
 use App\Helpers\QueueHelper;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class RequestService implements RequestServiceInterface
@@ -28,6 +29,7 @@ class RequestService implements RequestServiceInterface
                 'type' => $data['type'],
                 'queue' => $queueNumber,
                 'request' => $data['request'],
+                'status' => $data['status'] ?? 'pending',
             ]);
 
             $request->response()->create([
@@ -41,7 +43,14 @@ class RequestService implements RequestServiceInterface
 
     public function getRequestById(string $id): ?Request
     {
-        return Request::find($id);
+        try {
+            return Request::where('id', $id)
+                ->with(['user', 'response', 'requestFiles'])
+                ->first();
+        } catch (\Exception $e) {
+            Log::error('Error in getRequestById: ' . $e->getMessage());
+            return null;
+        }
     }
 
     public function updateRequest(Request $request, array $data): bool

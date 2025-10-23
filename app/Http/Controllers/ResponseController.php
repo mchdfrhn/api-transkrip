@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Response as ResponseModel;
-use App\Providers\ResponseServiceInterface;
+use App\Services\ResponseServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -59,7 +59,6 @@ class ResponseController extends Controller
         $data = $request->validate([
             'request_id' => 'required|exists:requests,id',
             'response' => 'required|string',
-            'status' => 'sometimes|in:pending,in_progress,completed',
         ]);
 
         $responseModel = $this->responseService->createResponse($data);
@@ -70,10 +69,19 @@ class ResponseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ResponseModel $response)
+    public function show($id)
     {
+        $response = $this->responseService->getResponseById($id);
+        
+        if (!$response) {
+            return response()->json(['message' => 'Response tidak ditemukan'], 404);
+        }
+
         // admin atau owner dari request terkait dapat melihat
         $this->authorizeOwnerOrAdmin($response);
+
+        // Load relasi untuk informasi lengkap
+        $response->load(['request', 'request.user']);
 
         return response()->json($response);
     }
@@ -89,7 +97,6 @@ class ResponseController extends Controller
         $data = $request->validate([
             'request_id' => 'sometimes|required|exists:requests,id',
             'response' => 'sometimes|required|string',
-            'status' => 'sometimes|in:pending,in_progress,completed',
         ]);
 
         $this->responseService->updateResponse($response, $data);

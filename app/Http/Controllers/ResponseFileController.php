@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ResponseFile;
-use App\Providers\ResponseFileServiceInterface;
+use App\Services\ResponseFileServiceInterface;
 use Illuminate\Http\Request;
 
 class ResponseFileController extends Controller

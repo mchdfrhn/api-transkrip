@@ -53,7 +53,10 @@ class UsersSeeder extends Seeder
 
         foreach ($users as $userData) {
             User::firstOrCreate(
-                ['username' => $userData['username']],  // check if exists by username
+                [
+                    'username' => $userData['username'],
+                    'nim' => $userData['nim']
+                ],  // check if exists by username and nim
                 $userData  // data to create if not exists
             );
         }

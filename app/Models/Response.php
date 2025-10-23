@@ -26,7 +26,6 @@ class Response extends Model
         'id',
         'request_id',
         'response',
-        'status',
     ];
 
     /**
@@ -49,5 +48,13 @@ class Response extends Model
     public function request(): BelongsTo
     {
         return $this->belongsTo(Request::class);
+    }
+
+    /**
+     * Get the files for the response.
+     */
+    public function responseFiles()
+    {
+        return $this->hasMany(ResponseFile::class);
     }
 }

@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\RequestFile;
-use App\Providers\RequestFileServiceInterface;
+use App\Services\RequestFileServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RequestFileController extends Controller
 {
@@ -40,6 +41,17 @@ class RequestFileController extends Controller
      */
     public function show(RequestFile $requestFile)
     {
+        // Load the request relation if not already loaded
+        if (!$requestFile->relationLoaded('request')) {
+            $requestFile->load('request');
+        }
+
+        // Only admin or request owner can access the file
+        $user = Auth::user();
+        if (!$user || ($user->role !== 'admin' && $user->id !== $requestFile->request->user_id)) {
+            abort(403, 'Unauthorized to access this request file');
+        }
+
         return response()->json($requestFile);
     }
 

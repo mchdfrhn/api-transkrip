@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('queue');
             $table->string('request');
             $table->timestamps();
-
+            $table->enum('status', ['pending', 'in_progress', 'completed'])->default('pending');
             $table->foreign('user_id')->references('id')->on('users');
         });
     }

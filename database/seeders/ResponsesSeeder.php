@@ -28,7 +28,6 @@ class ResponsesSeeder extends Seeder
                     'id' => Str::uuid(),
                     'request_id' => $request->id,
                     'response' => "Hasil transkrip untuk permintaan #".($index + 1),
-                    'status' => 'completed'
                 ]
             );
         }

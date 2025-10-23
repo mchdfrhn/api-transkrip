@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('request_id');
             $table->string('response');
             $table->timestamps();
-            $table->enum('status', ['pending', 'in_progress', 'completed'])->default('pending');
             $table->foreign('request_id')->references('id')->on('requests');
         });
     }

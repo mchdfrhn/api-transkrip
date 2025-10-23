@@ -29,6 +29,7 @@ class Request extends Model
         'type',
         'queue',
         'request',
+        'status',
     ];
 
     /**

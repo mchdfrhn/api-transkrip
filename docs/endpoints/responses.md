@@ -10,7 +10,6 @@
 {
     "request_id": "request-uuid",
     "response": "Response content",
-    "status": "accepted"
 }
 ```
 
@@ -20,7 +19,6 @@
     "id": "response-uuid",
     "request_id": "request-uuid",
     "response": "Response content",
-    "status": "accepted",
     "created_at": "2025-10-19T10:00:00Z",
     "updated_at": "2025-10-19T10:00:00Z"
 }
@@ -38,7 +36,6 @@
         "id": "response-uuid",
         "request_id": "request-uuid",
         "response": "Response content",
-        "status": "accepted",
         "created_at": "2025-10-19T10:00:00Z",
         "updated_at": "2025-10-19T10:00:00Z"
     }
@@ -59,7 +56,6 @@
     "id": "response-uuid",
     "request_id": "request-uuid",
     "response": "Response content",
-    "status": "accepted",
     "created_at": "2025-10-19T10:00:00Z",
     "updated_at": "2025-10-19T10:00:00Z"
 }

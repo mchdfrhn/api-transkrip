@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -19,27 +20,22 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json([
-                'message' => 'Unauthorized'
-            ], 401);
+            return ApiResponse::unauthorized('Invalid credentials');
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json([
-            'message' => 'Login success',
+        return ApiResponse::success([
             'access_token' => $token,
             'token_type' => 'Bearer',
             'user' => $user
-        ]);
+        ], 'Login successful');
     }
 
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json([
-            'message' => 'Logout success'
-        ]);
+        return ApiResponse::success(null, 'Logout successful');
     }
 }

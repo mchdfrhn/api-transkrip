@@ -22,6 +22,10 @@ This API provides endpoints for managing transcript and document requests in an 
    - Upload Files
    - Download Files
    - Supported Formats
+6. [Notifications](./docs/endpoints/notifications.md)
+   - View Notifications
+   - Mark as Read
+   - Delete Notifications
 
 ## Base URL
 ```
@@ -251,5 +255,153 @@ curl -H "Authorization: Bearer <token>" \
 - Untuk user, pastikan `user_id` di body sesuai dengan token yang digunakan (server akan menolak jika tidak sama).
 - Gunakan status code yang benar: 201 untuk create, 204 untuk delete tanpa body, 200 untuk sukses baca/update.
 - Tangani error 403/401 pada client: tampilkan pesan sesuai respons API.
+
+---
+
+## Notifications API
+
+Endpoints untuk mengelola notifikasi user.
+
+### List Notifications
+
+- Endpoint: `GET /api/notifications`
+- Auth required: Ya
+- Description: Mendapatkan semua notifikasi untuk user yang terautentikasi
+- Response format:
+  ```json
+  {
+    "status": "success",
+    "message": "Notifications retrieved successfully",
+    "data": [
+      {
+        "id": "unique-id",
+        "user_id": "user-id",
+        "message": "Your request has been processed",
+        "response_id": "response-id",
+        "is_read": false,
+        "created_at": "2025-11-08T10:00:00Z",
+        "updated_at": "2025-11-08T10:00:00Z"
+      }
+    ]
+  }
+  ```
+
+### Get Unread Count
+
+- Endpoint: `GET /api/notifications/unread-count`
+- Auth required: Ya
+- Description: Mendapatkan jumlah notifikasi yang belum dibaca
+- Response format:
+  ```json
+  {
+    "status": "success",
+    "message": "Unread notifications count retrieved successfully",
+    "data": {
+      "count": 5
+    }
+  }
+  ```
+
+### Mark Notification as Read
+
+- Endpoint: `POST /api/notifications/{id}/read`
+- Auth required: Ya
+- Description: Menandai notifikasi tertentu sebagai sudah dibaca
+- Response format:
+  ```json
+  {
+    "status": "success",
+    "message": "Notification marked as read",
+    "data": {
+      "id": "notification-id",
+      "is_read": true,
+      ...
+    }
+  }
+  ```
+
+### Mark All Notifications as Read
+
+- Endpoint: `POST /api/notifications/mark-all-read`
+- Auth required: Ya
+- Description: Menandai semua notifikasi user sebagai sudah dibaca
+- Response format:
+  ```json
+  {
+    "status": "success",
+    "message": "All notifications marked as read",
+    "data": null
+  }
+  ```
+
+### Delete Notification
+
+- Endpoint: `DELETE /api/notifications/{id}`
+- Auth required: Ya
+- Description: Menghapus notifikasi tertentu
+- Response format:
+  ```json
+  {
+    "status": "success",
+    "message": "Notification deleted successfully",
+    "data": null
+  }
+  ```
+
+### Delete All Read Notifications
+
+- Endpoint: `DELETE /api/notifications/read/all`
+- Auth required: Ya
+- Description: Menghapus semua notifikasi yang sudah dibaca
+- Response format:
+  ```json
+  {
+    "status": "success",
+    "message": "All read notifications deleted successfully",
+    "data": null
+  }
+  ```
+
+### Error Responses
+
+Semua endpoint notifikasi menggunakan format error yang konsisten:
+
+```json
+{
+  "status": "error",
+  "message": "Error message here",
+  "errors": {
+    // Additional error details if any
+  }
+}
+```
+
+Common error codes untuk notifikasi:
+- `401` - Token tidak valid atau tidak ada
+- `403` - User mencoba mengakses notifikasi yang bukan miliknya
+- `404` - Notifikasi tidak ditemukan
+
+### Contoh Penggunaan
+
+1. Mendapatkan semua notifikasi:
+```bash
+curl -X GET https://your-host/api/notifications \
+  -H "Authorization: Bearer <token>" \
+  -H "Accept: application/json"
+```
+
+2. Menandai notifikasi sebagai dibaca:
+```bash
+curl -X POST https://your-host/api/notifications/123/read \
+  -H "Authorization: Bearer <token>" \
+  -H "Accept: application/json"
+```
+
+3. Menghapus semua notifikasi yang sudah dibaca:
+```bash
+curl -X DELETE https://your-host/api/notifications/read/all \
+  -H "Authorization: Bearer <token>" \
+  -H "Accept: application/json"
+```
 
 ---

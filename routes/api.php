@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ResponseFileController;
 use App\Http\Controllers\RequestFileController;
 use App\Http\Controllers\UserFileController;
@@ -40,5 +41,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('responses', ResponseController::class);
         Route::apiResource('request-files', RequestFileController::class);
         Route::apiResource('response-files', ResponseFileController::class);
+        
+        // Notification routes
+        Route::prefix('notifications')->group(function () {
+            Route::get('/', [NotificationController::class, 'index']);
+            Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
+            Route::post('/{id}/read', [NotificationController::class, 'markAsRead']);
+            Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+            Route::delete('/{id}', [NotificationController::class, 'destroy']);
+            Route::delete('/read/all', [NotificationController::class, 'deleteAllRead']);
+        });
     });
 });

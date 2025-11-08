@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponse;
 use App\Models\Request as RequestModel;
 use App\Services\RequestServiceInterface;
 use Illuminate\Http\Request;
@@ -46,7 +47,7 @@ class RequestController extends Controller
         // hanya admin yang boleh melihat daftar semua request
         abort_unless($this->isAdmin(), 403, 'Unauthorized');
 
-        return response()->json($this->requestService->getAllRequests());
+        return ApiResponse::success($this->requestService->getAllRequests(), 'Successfully retrieved all requests');
     }
 
     /**
@@ -68,7 +69,7 @@ class RequestController extends Controller
 
         $requestModel = $this->requestService->createRequest($data);
 
-        return response()->json($requestModel, 201);
+        return ApiResponse::created($requestModel, 'Request created successfully');
     }
 
     /**
@@ -81,10 +82,7 @@ class RequestController extends Controller
             $request = $this->requestService->getRequestById($id);
             
             if (!$request) {
-                return response()->json([
-                    'message' => 'Request tidak ditemukan',
-                    'request_id' => $id
-                ], 404);
+                return ApiResponse::notFound('Request tidak ditemukan');
             }
 
             // Cek otorisasi
@@ -98,19 +96,13 @@ class RequestController extends Controller
                 'requestFiles'
             ]);
 
-            return response()->json([
-                'status' => 'success',
-                'data' => $request
-            ]);
+            return ApiResponse::success($request, 'Request details retrieved successfully');
 
         } catch (\Exception $e) {
             // Log error untuk debugging
             Log::error('Error fetching request: ' . $e->getMessage());
             
-            return response()->json([
-                'message' => 'Terjadi kesalahan saat mengambil data request',
-                'error' => $e->getMessage()
-            ], 500);
+            return ApiResponse::error('Terjadi kesalahan saat mengambil data request', 500, ['error' => $e->getMessage()]);
         }
     }
 
@@ -131,7 +123,7 @@ class RequestController extends Controller
 
         $this->requestService->updateRequest($request, $data);
 
-        return response()->json($request);
+        return ApiResponse::success($request, 'Request updated successfully');
     }
 
     /**
@@ -144,6 +136,6 @@ class RequestController extends Controller
 
         $this->requestService->deleteRequest($request);
 
-        return response()->json(null, 204);
+        return ApiResponse::success(null, 'Request deleted successfully', 204);
     }
 }

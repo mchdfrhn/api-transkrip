@@ -10,21 +10,25 @@
 {
     "user_id": "user-uuid",
     "type": "transkrip",
-    "request": "Permintaan transkrip nilai",
+    "request": "Permintaan transkrip nilai"
 }
 ```
 
 ### Response
 ```json
 {
-    "id": "request-uuid",
-    "user_id": "user-uuid",
-    "type": "transkrip",
-    "queue": "TRA251019-001",
-    "request": "Permintaan transkrip nilai",
-    "status": "pending",
-    "created_at": "2025-10-19T10:00:00Z",
-    "updated_at": "2025-10-19T10:00:00Z"
+    "status": "success",
+    "message": "Request created successfully",
+    "data": {
+        "id": "request-uuid",
+        "user_id": "user-uuid",
+        "type": "transkrip",
+        "queue": "TRA251019-001",
+        "request": "Permintaan transkrip nilai",
+        "status": "pending",
+        "created_at": "2025-10-19T10:00:00Z",
+        "updated_at": "2025-10-19T10:00:00Z"
+    }
 }
 ```
 
@@ -35,18 +39,22 @@
 
 ### Response
 ```json
-[
-    {
-        "id": "request-uuid",
-        "user_id": "user-uuid",
-        "type": "transkrip",
-        "queue": "TRA251019-001",
-        "request": "Permintaan transkrip nilai",
-        "status": "pending",
-        "created_at": "2025-10-19T10:00:00Z",
-        "updated_at": "2025-10-19T10:00:00Z"
-    }
-]
+{
+    "status": "success",
+    "message": "Requests retrieved successfully",
+    "data": [
+        {
+            "id": "request-uuid",
+            "user_id": "user-uuid",
+            "type": "transkrip",
+            "queue": "TRA251019-001",
+            "request": "Permintaan transkrip nilai",
+            "status": "pending",
+            "created_at": "2025-10-19T10:00:00Z",
+            "updated_at": "2025-10-19T10:00:00Z"
+        }
+    ]
+}
 ```
 
 ## Get Request by ID
@@ -60,14 +68,18 @@
 ### Response
 ```json
 {
-    "id": "request-uuid",
-    "user_id": "user-uuid",
-    "type": "transkrip",
-    "queue": "TRA251019-001",
-    "request": "Permintaan transkrip nilai",
-    "status": "pending",
-    "created_at": "2025-10-19T10:00:00Z",
-    "updated_at": "2025-10-19T10:00:00Z"
+    "status": "success",
+    "message": "Request retrieved successfully",
+    "data": {
+        "id": "request-uuid",
+        "user_id": "user-uuid",
+        "type": "transkrip",
+        "queue": "TRA251019-001",
+        "request": "Permintaan transkrip nilai",
+        "status": "pending",
+        "created_at": "2025-10-19T10:00:00Z",
+        "updated_at": "2025-10-19T10:00:00Z"
+    }
 }
 ```
 
@@ -83,7 +95,40 @@ Examples:
 - `LEG251019-001`: First legalisir request on Oct 19, 2025
 
 ### Error Responses
-- `401 Unauthorized`: Invalid or missing token
-- `403 Forbidden`: Insufficient permissions
-- `404 Not Found`: Request not found
-- `422 Unprocessable Entity`: Invalid input format
+
+#### 401 Unauthorized
+```json
+{
+    "status": "error",
+    "message": "Invalid or missing token"
+}
+```
+
+#### 403 Forbidden
+```json
+{
+    "status": "error",
+    "message": "Insufficient permissions"
+}
+```
+
+#### 404 Not Found
+```json
+{
+    "status": "error",
+    "message": "Request not found"
+}
+```
+
+#### 422 Unprocessable Entity
+```json
+{
+    "status": "error",
+    "message": "Validation failed",
+    "errors": {
+        "user_id": ["The user id field is required"],
+        "type": ["The type field must be one of: transkrip, legalisir"],
+        "request": ["The request field is required"]
+    }
+}
+```

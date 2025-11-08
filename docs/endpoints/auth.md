@@ -16,16 +16,19 @@
 ### Response
 ```json
 {
-    "message": "Login success",
-    "access_token": "1|xxxxxxxxxxxxxxxx",
-    "token_type": "Bearer",
-    "user": {
-        "id": "uuid",
-        "username": "username",
-        "email": "user@example.com",
-        "role": "user",
-        "fullname": "Full Name",
-        "url_photo": "https://example.com/photo.jpg"
+    "status": "success",
+    "message": "Login successful",
+    "data": {
+        "access_token": "1|xxxxxxxxxxxxxxxx",
+        "token_type": "Bearer",
+        "user": {
+            "id": "uuid",
+            "username": "username",
+            "email": "user@example.com",
+            "role": "user",
+            "fullname": "Full Name",
+            "url_photo": "https://example.com/photo.jpg"
+        }
     }
 }
 ```
@@ -38,10 +41,30 @@
 ### Response
 ```json
 {
-    "message": "Logout success"
+    "status": "success",
+    "message": "Logout successful",
+    "data": null
 }
 ```
 
 ### Error Responses
-- `401 Unauthorized`: Invalid credentials
-- `422 Unprocessable Entity`: Invalid input format
+
+#### 401 Unauthorized
+```json
+{
+    "status": "error",
+    "message": "Invalid credentials"
+}
+```
+
+#### 422 Unprocessable Entity
+```json
+{
+    "status": "error",
+    "message": "Validation failed",
+    "errors": {
+        "email": ["The email field is required"],
+        "password": ["The password field is required"]
+    }
+}
+```

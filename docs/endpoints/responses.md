@@ -9,18 +9,22 @@
 ```json
 {
     "request_id": "request-uuid",
-    "response": "Response content",
+    "response": "Response content"
 }
 ```
 
 ### Response
 ```json
 {
-    "id": "response-uuid",
-    "request_id": "request-uuid",
-    "response": "Response content",
-    "created_at": "2025-10-19T10:00:00Z",
-    "updated_at": "2025-10-19T10:00:00Z"
+    "status": "success",
+    "message": "Response created successfully",
+    "data": {
+        "id": "response-uuid",
+        "request_id": "request-uuid",
+        "response": "Response content",
+        "created_at": "2025-10-19T10:00:00Z",
+        "updated_at": "2025-10-19T10:00:00Z"
+    }
 }
 ```
 
@@ -31,15 +35,19 @@
 
 ### Response
 ```json
-[
-    {
-        "id": "response-uuid",
-        "request_id": "request-uuid",
-        "response": "Response content",
-        "created_at": "2025-10-19T10:00:00Z",
-        "updated_at": "2025-10-19T10:00:00Z"
-    }
-]
+{
+    "status": "success",
+    "message": "Responses retrieved successfully",
+    "data": [
+        {
+            "id": "response-uuid",
+            "request_id": "request-uuid",
+            "response": "Response content",
+            "created_at": "2025-10-19T10:00:00Z",
+            "updated_at": "2025-10-19T10:00:00Z"
+        }
+    ]
+}
 ```
 
 ## Get Response by ID
@@ -53,11 +61,15 @@
 ### Response
 ```json
 {
-    "id": "response-uuid",
-    "request_id": "request-uuid",
-    "response": "Response content",
-    "created_at": "2025-10-19T10:00:00Z",
-    "updated_at": "2025-10-19T10:00:00Z"
+    "status": "success",
+    "message": "Response retrieved successfully",
+    "data": {
+        "id": "response-uuid",
+        "request_id": "request-uuid",
+        "response": "Response content",
+        "created_at": "2025-10-19T10:00:00Z",
+        "updated_at": "2025-10-19T10:00:00Z"
+    }
 }
 ```
 
@@ -68,7 +80,39 @@ Available status values:
 - `processing`: Request is being processed
 
 ### Error Responses
-- `401 Unauthorized`: Invalid or missing token
-- `403 Forbidden`: Insufficient permissions
-- `404 Not Found`: Response not found
-- `422 Unprocessable Entity`: Invalid input format
+
+#### 401 Unauthorized
+```json
+{
+    "status": "error",
+    "message": "Invalid or missing token"
+}
+```
+
+#### 403 Forbidden
+```json
+{
+    "status": "error",
+    "message": "Insufficient permissions"
+}
+```
+
+#### 404 Not Found
+```json
+{
+    "status": "error",
+    "message": "Response not found"
+}
+```
+
+#### 422 Unprocessable Entity
+```json
+{
+    "status": "error",
+    "message": "Validation failed",
+    "errors": {
+        "request_id": ["The request id field is required"],
+        "response": ["The response field is required"]
+    }
+}
+```

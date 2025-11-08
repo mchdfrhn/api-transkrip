@@ -2,50 +2,99 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Notification as NotifModel;
-use App\Services\NotificationServiceInterface;
+use App\Helpers\ApiResponse;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class NotifController extends Controller
 {
-    public function __construct(private NotificationServiceInterface $notificationService)
-    {
-    }
-
-    private function isAdmin(): bool
-    {
-        $user = Auth::user();
-        return $user && ($user->role ?? null) === 'admin';
-    }
-
-    private function authorizeOwnerOrAdmin(NotifModel $notifModel)
-    {
-        $user = Auth::user();
-        if (!$user) {
-            abort(401, 'Unauthenticated');
-        }
-
-        // Admin dapat mengakses semua notifikasi
-        if ($this->isAdmin()) {
-            return;
-        }
-
-        // User hanya dapat mengakses notifikasi miliknya
-        if ($user->id !== $notifModel->user_id) {
-            abort(403, 'Unauthorized: Anda tidak memiliki akses ke notifikasi ini');
-        }
-    }
-
     /**
-     * Display a listing of the resource.
+     * Display a listing of notifications for the authenticated user.
      */
     public function index()
     {
-        // hanya admin yang boleh melihat daftar semua notifikasi
-        abort_unless($this->isAdmin(), 403, 'Unauthorized');
+        $notifications = Notification::where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        return response()->json($this->notificationService->getAllNotifications());
+        return ApiResponse::success($notifications, 'Notifications retrieved successfully');
+    }
+
+    /**
+     * Get count of unread notifications for the authenticated user.
+     */
+    public function unreadCount()
+    {
+        $count = Notification::where('user_id', Auth::id())
+            ->where('is_read', false)
+            ->count();
+
+        return ApiResponse::success(['count' => $count], 'Unread notifications count retrieved successfully');
+    }
+
+    /**
+     * Mark a notification as read.
+     */
+    public function markAsRead($id)
+    {
+        $notification = Notification::find($id);
+
+        if (!$notification) {
+            return ApiResponse::notFound('Notification not found');
+        }
+
+        if ($notification->user_id !== Auth::id()) {
+            return ApiResponse::forbidden('You are not authorized to update this notification');
+        }
+
+        $notification->update(['is_read' => true]);
+
+        return ApiResponse::success($notification, 'Notification marked as read');
+    }
+
+    /**
+     * Mark all notifications as read for the authenticated user.
+     */
+    public function markAllAsRead()
+    {
+        Notification::where('user_id', Auth::id())
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+
+        return ApiResponse::success(null, 'All notifications marked as read');
+    }
+
+    /**
+     * Remove the specified notification.
+     */
+    public function destroy($id)
+    {
+        $notification = Notification::find($id);
+
+        if (!$notification) {
+            return ApiResponse::notFound('Notification not found');
+        }
+
+        if ($notification->user_id !== Auth::id()) {
+            return ApiResponse::forbidden('You are not authorized to delete this notification');
+        }
+
+        $notification->delete();
+
+        return ApiResponse::success(null, 'Notification deleted successfully');
+    }
+
+    /**
+     * Delete all read notifications for the authenticated user.
+     */
+    public function deleteAllRead()
+    {
+        Notification::where('user_id', Auth::id())
+            ->where('is_read', true)
+            ->delete();
+
+        return ApiResponse::success(null, 'All read notifications deleted successfully');
     }
 }

@@ -26,6 +26,10 @@ class ResponseFile extends Model
         'id',
         'response_id',
         'url',
+        'filename',
+        'path',
+        'mime_type',
+        'size',
     ];
 
     /**

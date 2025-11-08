@@ -26,6 +26,10 @@ class RequestFile extends Model
         'id',
         'request_id',
         'url',
+        'filename',
+        'path',
+        'mime_type',
+        'size',
     ];
 
     /**

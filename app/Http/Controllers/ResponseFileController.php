@@ -27,12 +27,23 @@ class ResponseFileController extends Controller
     {
         $data = $request->validate([
             'response_id' => 'required|exists:responses,id',
-            'url' => 'required|string',
+            'file' => 'required|file|mimes:pdf,doc,docx,jpg,png|max:10240', // max 10MB
         ]);
 
-        $responseFile = $this->responseFileService->createResponseFile($data);
-
-        return response()->json($responseFile, 201);
+        try {
+            $responseFile = $this->responseFileService->createResponseFile($data);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'File uploaded successfully',
+                'data' => $responseFile
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error uploading file',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

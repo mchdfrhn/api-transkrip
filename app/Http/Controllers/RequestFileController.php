@@ -28,12 +28,23 @@ class RequestFileController extends Controller
     {
         $data = $request->validate([
             'request_id' => 'required|exists:requests,id',
-            'url' => 'required|string',
+            'file' => 'required|file|mimes:pdf,doc,docx,jpg,png,wav,mp3|max:10240', // max 10MB
         ]);
 
-        $requestFile = $this->requestFileService->createRequestFile($data);
-
-        return response()->json($requestFile, 201);
+        try {
+            $requestFile = $this->requestFileService->createRequestFile($data);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'File uploaded successfully',
+                'data' => $requestFile
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error uploading file',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

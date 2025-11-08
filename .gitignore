@@ -5,6 +5,7 @@
 .env.production
 .phpactor.json
 .phpunit.result.cache
+s3-transkrip-api_accessKeys.csv
 /.fleet
 /.idea
 /.nova

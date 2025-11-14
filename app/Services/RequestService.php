@@ -48,6 +48,11 @@ class RequestService implements RequestServiceInterface
         });
     }
 
+    public function getRequestByUserId(string $userId)
+    {
+        return Request::where('user_id', $userId)->get();
+    }
+
     public function getRequestById(string $id): ?Request
     {
         try {

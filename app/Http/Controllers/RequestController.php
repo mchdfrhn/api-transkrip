@@ -51,6 +51,36 @@ class RequestController extends Controller
     }
 
     /**
+     * Display a listing of requests for a specific user.
+     */
+    public function getUserRequests($id_user)
+    {
+        try {
+            $user = Auth::user();
+            
+            // User hanya bisa lihat request milik mereka sendiri, kecuali admin
+            if (!$this->isAdmin() && $user->id !== $id_user) {
+                abort(403, 'Unauthorized: Anda tidak dapat melihat request user lain');
+            }
+
+            $requests = $this->requestService->getRequestsByUserId($id_user);
+
+            return ApiResponse::success(
+                $requests,
+                'Successfully retrieved user requests',
+                200
+            );
+        } catch (\Exception $e) {
+            Log::error('Error fetching user requests: ' . $e->getMessage());
+            return ApiResponse::error(
+                'Terjadi kesalahan saat mengambil data request',
+                500,
+                ['error' => $e->getMessage()]
+            );
+        }
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -84,7 +114,7 @@ class RequestController extends Controller
             if (!$request) {
                 return ApiResponse::notFound('Request tidak ditemukan');
             }
-
+            
             // Cek otorisasi
             $this->authorizeOwnerOrAdmin($request);
 
@@ -92,7 +122,7 @@ class RequestController extends Controller
             $request->load([
                 'user', 
                 'response', 
-                'response.responseFiles', 
+                'response.responseFiles',
                 'requestFiles'
             ]);
 

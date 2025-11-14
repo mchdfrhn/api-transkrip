@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 interface RequestServiceInterface
 {
     public function getAllRequests(): Collection;
+    public function getRequestsByUserId(string $userId): Collection;
     public function createRequest(array $data): Request;
     public function getRequestById(string $id): ?Request;
     public function updateRequest(Request $request, array $data): bool;

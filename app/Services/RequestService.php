@@ -17,6 +17,13 @@ class RequestService implements RequestServiceInterface
         return Request::all();
     }
 
+    public function getRequestsByUserId(string $userId): Collection
+    {
+        return Request::where('user_id', $userId)
+            ->with(['user', 'response', 'response.responseFiles', 'requestFiles'])
+            ->get();
+    }
+
     public function createRequest(array $data): Request
     {
         return DB::transaction(function () use ($data) {
